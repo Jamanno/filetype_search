@@ -1,0 +1,5 @@
+filetype_description="opendocument"
+search_openoffice() 
+{   
+    unzip -p "$file" content.xml | grep -iql "$pattern" 
+}

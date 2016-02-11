@@ -1,0 +1,63 @@
+#!/bin/bash
+# $1 is filetype, $2 is path, $3 move files, $4 if documents should be grepped on pattern
+#. type_gif
+# arguments have to be at least 4
+if [ $# -ne 4 ]
+	then
+		printf "1 is filetype, 2 is path, 3 pattern, \n4 fileaction\n\t0 list only\n\t1 copy \n\t2 mv\n"
+		exit
+fi
+libpath="$(pwd)/lib/"
+filetype_wanted=$1
+path=$2
+pattern=$3
+fileaction=$4
+#include wanted filetype function
+source $libpath"type_$filetype_wanted"
+# outputdir
+targetdir=$path"/"$filetype_wanted"_"$pattern"_files"
+if (( $4 > 0 )); then
+	echo $targetdir, "hio", $3
+    mkdir -p $targetdir 
+fi
+
+# function to copy, move or do nothing with file found
+f_fileaction() {
+    # 1= whattodo 2=file, 3=path, 4=dstpath
+	case "$1" in
+	0)
+		echo $3"/"$2 
+	;;
+	1)
+		cp -v $3"/"$2 $4"/"$2
+	;;
+	2)
+		mv -v $3"/"$2 $4"/"$2
+	esac
+}
+
+# search for file and return full path ... exclude targetdir
+echo "ignoring dir: " $targetdir
+for file in $(find $path -path $targetdir -prune -o -printf "%p\n"); do
+    # extract filetype string
+    # old comparsion of filetype, takes too long
+    #a=$(file $file | cut -f2 -d' ')
+    # extract filename from full path and put both into vars
+    filepath=${file%/*}
+    filename=${file##*/}
+    # check if filetype description contains wanted filetype (lib/filetype)
+	# checkout found file and exclude directories
+	#echo $filetype_description
+    file $file | grep -i "$filetype_description" |  grep -iqlv "directory" 
+	# when file is wanted filetype... search into that file for pattern
+    if [ "$?" -eq 0 ]; then 
+		# starting pattern search 
+        search_${filetype_wanted}
+
+        # wait for return from function and do fileaction
+        if [ $? -eq 0 ]; then
+            # move or copy file if needed
+			f_fileaction $fileaction $filename $filepath $targetdir
+        fi
+    fi
+done

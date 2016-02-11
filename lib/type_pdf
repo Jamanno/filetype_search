@@ -1,0 +1,6 @@
+#!/bin/bash
+filetype_string_wanted="pdf"
+search_pdf() 
+{   
+	pdftotext "$file" - | grep -ilq "$grep_pattern"
+}
