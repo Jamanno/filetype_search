@@ -7,7 +7,7 @@ if [ $# -ne 4 ]
 		printf "1 is filetype, 2 is path, 3 pattern, \n4 fileaction\n\t0 list only\n\t1 copy \n\t2 mv\n"
 		exit
 fi
-libpath="$(pwd)/lib/"
+libpath="lib/"
 filetype_wanted=$1
 path=$2
 pattern=$3
