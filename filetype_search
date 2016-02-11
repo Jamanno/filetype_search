@@ -1,6 +1,4 @@
 #!/bin/bash
-# $1 is filetype, $2 is path, $3 move files, $4 if documents should be grepped on pattern
-#. type_gif
 # arguments have to be at least 4
 if [ $# -ne 4 ]
 	then
@@ -46,8 +44,6 @@ for file in $(find $path -path $targetdir -prune -o -printf "%p\n"); do
     filepath=${file%/*}
     filename=${file##*/}
     # check if filetype description contains wanted filetype (lib/filetype)
-	# checkout found file and exclude directories
-	#echo $filetype_description
     file $file | grep -i "$filetype_description" |  grep -iqlv "directory" 
 	# when file is wanted filetype... search into that file for pattern
     if [ "$?" -eq 0 ]; then 
