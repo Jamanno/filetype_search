@@ -2,5 +2,5 @@
 filetype_description="pdf"
 search_pdf() 
 {   
-	pdftotext "$file" - | grep -ilq "$grep_pattern"
+	pdftotext "$file" - | grep -ilq "$pattern"
 }
